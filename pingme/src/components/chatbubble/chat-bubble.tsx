@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button"; // Assuming Button is imported from a UI library
+import { Button } from "@/components/ui/button";
 
 // Import chatbot API function
 import { chatbot } from "../../lib/chatbot";
@@ -9,43 +9,48 @@ import { chatbot } from "../../lib/chatbot";
 type Props = {};
 
 const ChatBubble = (props: Props) => {
-  const [messages, setMessages] = useState<{ text: string; isBot: boolean }[]>([]);
+  const [messages, setMessages] = useState<{ text: string; isBot: boolean }[]>(
+    []
+  );
   const [input, setInput] = useState("");
 
-  // Define the regex to capture phone numbers
-  const phoneRegex = /(\+254\s?\d{9}|\d{9}|\(?\d{3}\)?\s?\d{3}\s?\d{3})/;
-  const extractPhoneNumber = (message: string) => {
-    const match = message.match(phoneRegex);
-    if (match) {
-      let phoneNumber = match[0].replace(/\D/g, ""); // Remove non-digit characters
-      if (phoneNumber.length === 9 && !phoneNumber.startsWith("254")) {
-        phoneNumber = "254" + phoneNumber; // Prepend '254' if not already present
-      }
-      return `https://wa.me/${phoneNumber}`; // Ensure the phone number is in the wa.me format
+  const phoneRegex = /(\+254\d{9}|0\d{9}|\d{9})/;
+
+const extractPhoneNumber = (message: string) => {
+  const match = message.match(phoneRegex);
+  if (match) {
+    let phoneNumber = match[0].replace(/\D/g, ""); 
+
+    if (phoneNumber.startsWith("0")) {
+      phoneNumber = "254" + phoneNumber.slice(1);
     }
-    return null; // Return null if no match found
-  };
+
+    const whatsApp =  `https://wa.me/${phoneNumber}`
+
+    return {
+      phoneNumber,
+      whatsApp,
+    }
+  }
+  return null;
+};
+
 
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    // Extract the phone number from the input message
     const phoneNumber = extractPhoneNumber(input);
 
     if (phoneNumber) {
-      // Send the phone number to Telegram
-      await sendToTelegramBot(phoneNumber);
+      await sendToTelegramBot(phoneNumber.whatsApp);
 
-      // Display feedback to the chat
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: `${phoneNumber}`, isBot: false },
+        { text: `Got is your phone number is ${phoneNumber.phoneNumber}`, isBot: false },
       ]);
-    } else if (input.length > 20) { // Assume "long message" is defined as >100 chars
-      // Send the long message to Telegram
+    } else if (input.length > 20) {
       await sendToTelegramBot(input);
 
-      // Display feedback to the chat
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: `${input}`, isBot: false },
@@ -57,9 +62,9 @@ const ChatBubble = (props: Props) => {
       ]);
     }
 
-    // Send chatbot response
     try {
-      const botResponse: string = await chatbot(input) || "Error: No response from chatbot";
+      const botResponse: string =
+        (await chatbot(input)) || "Error: No response from chatbot";
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: botResponse, isBot: true },
@@ -71,11 +76,11 @@ const ChatBubble = (props: Props) => {
       ]);
     }
 
-    setInput(""); // Clear input after sending
+    setInput("");
   };
 
   // Send the message to Telegram bot
-  const sendToTelegramBot = async (message: string) => {
+  const sendToTelegramBot = async (message: string ) => {
     if (!message) {
       console.error("Message is empty");
       return;
@@ -116,14 +121,22 @@ const ChatBubble = (props: Props) => {
 
   return (
     <div className="relative w-full max-w-[400px] h-[450px] bg-transparent flex flex-col">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-3"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {messages.map((message, index) => (
-          <div key={index} className={`flex ${message.isBot ? "justify-start" : "justify-end"}`}>
+          <div
+            key={index}
+            className={`flex ${
+              message.isBot ? "justify-start" : "justify-end"
+            }`}
+          >
             <div
               className={`shadow-2xl inline-block p-3 max-w-[80%] rounded-lg transition-all duration-300 ${
                 message.isBot
                   ? "dark:bg-[#1a202c] text-gray-500 dark:text-white"
-                  : "bg-[#2C261A] text-gray-500 shadow-lg"
+                  : "bg-[#2C261A] text-gray-300 dark:text-gray-500 shadow-lg"
               }`}
             >
               {message.text}
@@ -133,7 +146,7 @@ const ChatBubble = (props: Props) => {
       </div>
       <div className="px-4 py-2 flex space-x-3 bg-transparent">
         <Input
-          className="w-full p-3 border-2 rounded-lg dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border-2 rounded-lg dark:bg-gray-600 text-gray-300 dark:text-white  focus:ring-2 focus:ring-blue-500"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

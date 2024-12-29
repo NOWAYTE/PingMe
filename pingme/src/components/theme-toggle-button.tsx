@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { RiSunLine, RiMoonClearFill } from "react-icons/ri";
+import { Variants, Transition } from 'framer-motion';
 
 const ThemeToggleButton = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -30,21 +31,20 @@ const ThemeToggleButton = () => {
     }
   };
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     hover: {
       scale: 1.1,
-      rotate: 180,
+      opacity: 0.8,
       transition: {
         duration: 0.3,
-        type: "spring",
-        stiffness: 260,
-        damping: 20
-      }
+        repeat: 1,
+        repeatType: "reverse",  // This is correct now
+      },
     },
     tap: {
       scale: 0.9,
-      rotate: 360
-    }
+      rotate: 360,
+    },
   };
 
   const iconVariants = {
@@ -74,9 +74,9 @@ const ThemeToggleButton = () => {
       transition: {
         duration: 0.3,
         repeat: Infinity,
-        repeatType: "reverse"
-      }
-    }
+        repeatType: "reverse" as const,
+      },
+    },
   };
 
   return (

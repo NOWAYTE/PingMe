@@ -1,22 +1,12 @@
 "use client";
-import Image from "next/image";
-import Navbar from "../navbar/navbar";
 import VoxelDog from "@/components/voxelDog";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { FaWhatsapp, FaPaperPlane, FaMicrophone } from "react-icons/fa";
 import ChatBubbble from "@/components/chatbubble/chat-bubble";
 
 export default function Home() {
-  const [message, setMessage] = useState("");
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
 
   return (
     <div className="min-h-screen w-full flex flex-col p-2 sm:p-3 mx-auto text-white">
-      {/* <div className="w-full">
-        <Navbar />
-      </div> */}
 
       <div className="flex-1 flex flex-col items-center justify-center mt-2 space-y-4 sm:space-y-6 px-3 sm:px-6 lg:px-8">
         <div className="relative w-[90%] sm:w-[80%] h-[250px] sm:h-[300px] md:h-[400px] flex items-center justify-center">
