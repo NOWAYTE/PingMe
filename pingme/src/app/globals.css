@@ -2,8 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Base Theme Variables */
+@layer base {
+  :root {
+    --background: #ffffff; /* Default Light Mode Background */
+    --foreground: #000000; /* Default Light Mode Text */
+    --radius: 8px; /* Example Radius */
+  }
+
+  .dark {
+    --background: #1a202c; /* Dark Mode Background */
+    --foreground: #f7fafc; /* Dark Mode Text */
+  }
+
+  body {
+    @apply bg-background text-foreground; /* Apply Tailwind utilities */
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
+/* Hides the vertical scrollbar */
+::-webkit-scrollbar {
+  display: none;
 }

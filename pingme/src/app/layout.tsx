@@ -28,13 +28,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen flex items-center justify-center bg-[#ECDFCC] dark:bg-[#161515]">
-          <div className="max-w-3xl w-full">
-            {children}
-            <ThemeToggleButton />
-          </div>
-          
-          </div>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="max-w-3xl w-full">{children}</div>
+          <ThemeToggleButton />
+        </div>
       </body>
     </html>
   );
